@@ -1,15 +1,13 @@
 import PyPDF2
 
-file = open('test_files/Swica_Leistungsabrechnung.pdf', 'rb')
-pdfReader = PyPDF2.PdfFileReader(file)
+def read_pdf(file):
+    return PyPDF2.PdfFileReader(file)
 
-# printing number of pages in pdf file
-print("Total number of pages in sample.pdf", pdfReader.numPages)
+def read_page(pdf_file, page_number):
+    return pdf_file.getPage(page_number)
 
-# creating a page object
-pageObj = pdfReader.getPage(0)
-# extracting text from page
-print(pageObj.extractText())
+def print_metadata(pdf_file):
+    # printing number of pages in pdf file
+    print("Total number of pages in sample.pdf", pdf_file.numPages, '\n\n')
 
-# closing the pdf file object
-file.close()
+
