@@ -8,6 +8,6 @@ def read_page(pdf_file, page_number):
 
 def print_metadata(pdf_file):
     # printing number of pages in pdf file
-    print("Total number of pages in sample.pdf", pdf_file.numPages, '\n\n')
+    print("Total number of pages:", pdf_file.numPages)
 
 
