@@ -28,7 +28,7 @@ Helsana-Leistungsabrechnung-20220628
     "regex_paterns": 
     { 
         "document_id": "Rechnung Nr. .*"
-        "date": " .* 15. Januar 2022"
+        "date": "(?<=Dübendorf\n)(.*)(?=\nLeistungsabrechnung)"
     }
     "target_location": C:\Some_Directory\Helsana\Leistungsabrechnungen
 }

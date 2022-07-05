@@ -1,7 +1,8 @@
 import json
+import io
 
-def read_json():
-    file = open('resources/config_files/Helsana-Leistungsabrechnung.json', 'r')
-    data = json.load(file)
-    file.close()
+def read_json(config_file):
+    config = io.open(config_file, 'r', encoding="utf-8")
+    data = json.load(config)
+    config.close()
     return data
