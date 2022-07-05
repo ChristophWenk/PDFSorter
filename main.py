@@ -8,7 +8,7 @@ def create_document_type_list(path):
     file_list = [f for f in listdir(path) if isfile(join(path, f))]
     document_type_list = []
     for file in file_list:
-        document_type_list.append(file.split('-'))
+        document_type_list.append(file.replace('.json', '').split('-'))
     return document_type_list
 
 def evaluate_document_type(text, document_type_list):
@@ -19,10 +19,18 @@ def evaluate_document_type(text, document_type_list):
 
 # Check which company is in scope
 def evaluate_company(text, document_type_list):
+    company = ''
+    document_type = ''
     for document_type_tuple in document_type_list:
         if document_type_tuple[0] in text:
             print("Company:", document_type_tuple[0])
-            return document_type_tuple[0], evaluate_document_type(text, document_type_list)
+            company = document_type_tuple[0]
+            document_type = evaluate_document_type(text, document_type_list)
+            break
+    return company, document_type
+
+def get_config_file(company, document_type):
+    print('')
 
 def process_files(path):
     file_path_list = [f for f in listdir(path) if isfile(join(path, f))]
@@ -37,7 +45,10 @@ def process_files(path):
         pdf_page = pdf_parser.read_page(pdf_file, 0)
         pdf_text = pdf_page.extractText()
 
-        evaluate_company(pdf_text, document_type_list)
+        document_type_list = create_document_type_list(
+            'F:/Christoph/Sonstiges/Development/PDFSorter/resources/config_files')
+        company, document_type = evaluate_company(pdf_text, document_type_list)
+        get_config_file(company, document_type)
 
         file.close()
 
@@ -49,7 +60,7 @@ if __name__ == '__main__':
     json_file = json_parser.read_json()
     #print(json_file['company_name'])
 
-    document_type_list = create_document_type_list('F:/Christoph/Sonstiges/Development/PDFSorter/resources/config_files')
+
 
     file_path = 'resources/test_files'
     process_files(file_path)
