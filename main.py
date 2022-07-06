@@ -92,8 +92,8 @@ def process_files(path, config_file_path):
                 print("Document ID: " + sanitized_document_id)
                 print("Date: " + sanitized_date)
 
-                file_manipulator.rename_file(path, file_name, company, document_type, sanitized_date, sanitized_document_id)
-                file_manipulator.move_file(path, file_name, config['target_location'])
+                renamed_file = file_manipulator.rename_file(path, file_name, company, document_type, sanitized_date, sanitized_document_id)
+                file_manipulator.move_file(path, renamed_file, config['target_location'])
 
         print('======================================================')
 
