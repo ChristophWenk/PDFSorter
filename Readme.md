@@ -1,5 +1,6 @@
 # Guides
 https://realpython.com/pdf-python/
+https://dateparser.readthedocs.io/en/latest/
 
 # Requirements
 - As a user I want the script to determine to which company the PDF belongs to
@@ -30,7 +31,7 @@ Helsana-Leistungsabrechnung-20220628
         "document_id": "Rechnung Nr. .*"
         "date": "(?<=Dübendorf\n)(.*)(?=\nLeistungsabrechnung)"
     }
-    "target_location": C:\Some_Directory\Helsana\Leistungsabrechnungen
+    "target_location": "F:\Christoph\Sonstiges\Development\PDFSorter\target"
 }
 ```
 
