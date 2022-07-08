@@ -1,13 +1,14 @@
-import file_manipulator
 import json_parser
-import pdf_parser
 import re
-import dateparser
 from os import listdir
 from os.path import isfile, join
-from datetime import datetime
 
 # Read in all config files and create a list of document types for each company
+from data_sanitizer import sanitize_document_id, sanitize_date
+from pdf_parser import read_pdf
+from json_parser import read_json
+
+
 def create_document_type_list(path):
     file_list = [f for f in listdir(path) if isfile(join(path, f))]
     document_type_list = []
@@ -37,34 +38,15 @@ def evaluate_company(text, document_type_list):
 
 
 def get_config_file(company, document_type, config_file_path):
-    return json_parser.read_json(config_file_path + '/' + company + '-' + document_type + '.json')
+    return read_json(config_file_path + '/' + company + '-' + document_type + '.json')
 
-def sanitize_document_id(document_id):
-    document_id = document_id.replace(' ', '')
-    document_id = document_id.replace('\n', '')
-    return document_id
-
-def sanitize_date(date):
-    # Normalize date from text
-    normalized_date = dateparser.parse(date, languages=['de'])
-    # Reformat date
-    date = normalized_date.strftime("%Y-%m-%d")
-    return date
 
 def process_files(path, config_file_path):
     file_path_list = [f for f in listdir(path) if isfile(join(path, f))]
     for file_name in file_path_list:
         print("Processing file...", file_name)
         file_path = path + '/' + file_name
-        file = open(file_path, 'rb')
-
-        pdf_file = pdf_parser.read_pdf(file)
-        pdf_parser.print_metadata(pdf_file)
-
-        pdf_page = pdf_parser.read_page(pdf_file, 0)
-        pdf_text = pdf_page.extractText()
-
-        file.close()
+        pdf_text = read_pdf(file_path)
 
         document_type_list = create_document_type_list(config_file_path)
         company, document_type = evaluate_company(pdf_text, document_type_list)
@@ -75,7 +57,7 @@ def process_files(path, config_file_path):
             #     f = open("demofile2.txt", "a")
             #     f.write(pdf_text)
             #     f.close()
-            if document_type == 'Leistungsabrechnung':
+            if company == 'Helsana':
                 config = get_config_file(company, document_type, config_file_path)
 
                 document_id_regex_config = config['regex_paterns']['document_id']
@@ -92,15 +74,15 @@ def process_files(path, config_file_path):
                 print("Document ID: " + sanitized_document_id)
                 print("Date: " + sanitized_date)
 
-                renamed_file = file_manipulator.rename_file(path, file_name, company, document_type, sanitized_date, sanitized_document_id)
-                file_manipulator.move_file(path, renamed_file, config['target_location'])
+                # renamed_file = file_manipulator.rename_file(path, file_name, company, document_type, sanitized_date, sanitized_document_id)
+                # file_manipulator.move_file(path, renamed_file, config['target_location'])
 
         print('======================================================')
 
 
 # Main Function
 if __name__ == '__main__':
-    file_path = 'resources/test_files'
-    config_file_path = 'F:/Christoph/Sonstiges/Development/PDFSorter/resources/config_files'
+    file_path = '../resources/test_files'
+    config_file_path = '../resources/config_files'
 
     process_files(file_path, config_file_path)
