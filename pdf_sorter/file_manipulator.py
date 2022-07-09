@@ -8,8 +8,7 @@ logger = logging.getLogger(__name__)
 def rename_file(path, old_name, config):
     values = {}
     for key in config:
-        if type(config[key]) is str:
-            values.update({key: config[key]})
+        values.update({key: config[key]})
     new_name = ""
     try:
         new_name = config['file_name_format'].format(**values)

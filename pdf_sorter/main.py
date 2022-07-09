@@ -79,7 +79,8 @@ def process_files(path, config_file_path):
             try:
                 for regex_key in config['regex_paterns']:
                     try:
-                        attribute_value = get_attr_from_regex(config, regex_key, file_name, not_processed_list, pdf_text)
+                        attribute_value = get_attr_from_regex(config, regex_key, file_name, not_processed_list,
+                                                              pdf_text)
                         sanitized_attr = sanitize_attr(attribute_value, regex_key)
                         config.update({regex_key: sanitized_attr})
                     except ValueError:
@@ -94,15 +95,15 @@ def process_files(path, config_file_path):
                 not_processed_list.append(file_name)
                 continue
 
-            # try:
-            #     target_directory = config['target_directory'] + "\\" + sanitized_date[0:4]
-            #     makedirs(os.path.dirname(target_directory + "\\" + renamed_file),
-            #              exist_ok=True)
-            #     move_file(path, renamed_file, target_directory)
-            # except PermissionError as exception:
-            #     logging.warning("File not accessible: " + exception.filename + ". PDF file was not moved.")
-            #     not_processed_list.append(renamed_file)
-            #     continue
+            try:
+                target_directory = config['target_directory'] + "\\" + config['date'][0:4]
+                makedirs(os.path.dirname(target_directory + "\\" + renamed_file),
+                         exist_ok=True)
+                move_file(path, renamed_file, target_directory)
+            except PermissionError as exception:
+                logging.warning("File not accessible: " + exception.filename + ". PDF file was not moved.")
+                not_processed_list.append(renamed_file)
+                continue
 
         else:
             logger.warning("Company name and document type not found. Skipping PDF file.")
