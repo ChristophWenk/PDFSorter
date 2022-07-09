@@ -5,10 +5,19 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def rename_file(path, file, company, document_type, date, document_id):
-    new_name = company + "_" + date + "_" + document_type + "_" + document_id + ".pdf"
+def rename_file(path, old_name, config):
+    values = {}
+    for key in config:
+        if type(config[key]) is str:
+            values.update({key: config[key]})
+    new_name = ""
+    try:
+        new_name = config['file_name_format'].format(**values)
+    except KeyError as exception:
+        logging.warning("Expected Token named " + exception + " but it was not found. Skipping rename.")
+
     logger.info("Renaming file to..." + new_name)
-    os.rename(path + "/" + file, path + "/" + new_name)
+    os.rename(path + "/" + old_name, path + "/" + new_name)
     return new_name
 
 

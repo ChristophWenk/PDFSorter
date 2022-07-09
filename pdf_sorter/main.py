@@ -7,7 +7,7 @@ from itertools import groupby
 from os import listdir, makedirs
 from os.path import isfile, join
 from pathlib import Path
-from data_sanitizer import sanitize_document_id, sanitize_date
+from data_sanitizer import sanitize_document_id, sanitize_date, sanitize_attr
 from pdf_parser import read_pdf
 from json_parser import read_json
 from pdf_sorter.file_manipulator import rename_file, move_file
@@ -76,37 +76,24 @@ def process_files(path, config_file_path):
                 not_processed_list.append(file_name)
                 continue
 
-            document_id_regex_config = config['regex_paterns']['document_id']
-            document_id_regex = re.compile(document_id_regex_config)
+            try:
+                for regex_key in config['regex_paterns']:
+                    try:
+                        attribute_value = get_attr_from_regex(config, regex_key, file_name, not_processed_list, pdf_text)
+                        sanitized_attr = sanitize_attr(attribute_value, regex_key)
+                        config.update({regex_key: sanitized_attr})
+                    except ValueError:
+                        raise ValueError
+            except ValueError:
+                break
 
-            if document_id_regex.search(pdf_text) is not None:
-                document_id = document_id_regex.search(pdf_text).group()
-            else:
-                logger.warning("Document ID not found. Skipping PDF file.")
+            try:
+                renamed_file = rename_file(path, file_name, config)
+            except PermissionError as exception:
+                logging.warning("File not accessible: " + exception.filename + ". PDF file was not renamed.")
                 not_processed_list.append(file_name)
                 continue
-            sanitized_document_id = sanitize_document_id(document_id)
-            logger.info("Document ID: " + sanitized_document_id)
 
-            date_regex_config = config['regex_paterns']['date']
-            date_regex = re.compile(date_regex_config)
-            if date_regex.search(pdf_text) is not None:
-                date = date_regex.search(pdf_text).group()
-            else:
-                logger.warning("Date not found. Skipping file.")
-                not_processed_list.append(file_name)
-                continue
-            sanitized_date = sanitize_date(date)
-            logger.info("Date: " + sanitized_date)
-
-            # try:
-            #     renamed_file = rename_file(path, file_name, company, document_type, sanitized_date,
-            #                                sanitized_document_id)
-            # except PermissionError as exception:
-            #     logging.warning("File not accessible: " + exception.filename + ". PDF file was not renamed.")
-            #     not_processed_list.append(file_name)
-            #     continue
-            #
             # try:
             #     target_directory = config['target_directory'] + "\\" + sanitized_date[0:4]
             #     makedirs(os.path.dirname(target_directory + "\\" + renamed_file),
@@ -133,6 +120,17 @@ def process_files(path, config_file_path):
             output_list += "\n" + file_name
         logger.warning("The following PDF files could not be processed or have just been partially processed:" +
                        output_list)
+
+
+def get_attr_from_regex(config, regex, file_name, not_processed_list, pdf_text):
+    regex_config = config['regex_paterns'][regex]
+    compiled_regex = re.compile(regex_config)
+    if compiled_regex.search(pdf_text) is not None:
+        return compiled_regex.search(pdf_text).group()
+    else:
+        logger.warning("Value for Regular Expression " + regex + " not found. Skipping PDF file.")
+        not_processed_list.append(file_name)
+        raise ValueError(regex + ' not found')
 
 
 # Main Function
