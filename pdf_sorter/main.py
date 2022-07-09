@@ -21,7 +21,7 @@ def create_document_type_list(path):
 def evaluate_document_type(text, document_type_list):
     for document_type_tuple in document_type_list:
         if document_type_tuple[1] in text:
-            logging.info("Document Type:" + document_type_tuple[1])
+            logger.info("Document Type:" + document_type_tuple[1])
             return document_type_tuple[1]
 
 
@@ -31,7 +31,7 @@ def evaluate_company(text, document_type_list):
     document_type = None
     for document_type_tuple in document_type_list:
         if document_type_tuple[0] in text:
-            logging.info("Company:" + document_type_tuple[0])
+            logger.info("Company:" + document_type_tuple[0])
             company = document_type_tuple[0]
             document_type = evaluate_document_type(text, document_type_list)
             break
@@ -43,11 +43,15 @@ def get_config_file(company, document_type, config_file_path):
 
 
 def process_files(path, config_file_path):
+    logger.info("\n"
+                "##################################\n"
+                "# Starting new PDF Sort Run\n"
+                "##################################")
     file_path_list = [f for f in listdir(path) if isfile(join(path, f))]
     for file_name in file_path_list:
-        logging.info("Processing file..." + file_name)
-        file_path = path + '/' + file_name
-        pdf_text = read_pdf(file_path)
+        logger.info("Processing file..." + file_name)
+        pdf_file_path = path + '/' + file_name
+        pdf_text = read_pdf(pdf_file_path)
 
         document_type_list = create_document_type_list(config_file_path)
         company, document_type = evaluate_company(pdf_text, document_type_list)
@@ -66,14 +70,14 @@ def process_files(path, config_file_path):
             sanitized_document_id = sanitize_document_id(document_id)
             sanitized_date = sanitize_date(date)
 
-            logging.info("Document ID: " + sanitized_document_id)
-            logging.info("Date: " + sanitized_date)
+            logger.info("Document ID: " + sanitized_document_id)
+            logger.info("Date: " + sanitized_date)
 
             # renamed_file = rename_file(path, file_name, company, document_type, sanitized_date,
             #                            sanitized_document_id)
             # move_file(path, renamed_file, config['target_location'])
 
-        logging.info('======================================================')
+        logger.info('======================================================')
 
 
 # Main Function
