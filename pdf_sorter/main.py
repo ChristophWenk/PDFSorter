@@ -1,15 +1,13 @@
-import json
+import locale
 import logging
 import os
 import re
-from operator import itemgetter
-from itertools import groupby
 from os import listdir, makedirs
 from os.path import isfile, join
-from pathlib import Path
-from data_sanitizer import sanitize_document_id, sanitize_date, sanitize_attr
-from pdf_parser import read_pdf
+
+from data_sanitizer import sanitize_attr
 from json_parser import read_json
+from pdf_parser import read_pdf
 from pdf_sorter.file_manipulator import rename_file, move_file
 from pdf_sorter.logger import setup_logger
 
@@ -76,6 +74,7 @@ def process_files(path, config_file_path):
                 not_processed_list.append(file_name)
                 continue
 
+            # Read out attribute values from PDF and sanitize them
             try:
                 for regex_key in config['regex_paterns']:
                     try:
@@ -88,6 +87,7 @@ def process_files(path, config_file_path):
             except ValueError:
                 break
 
+            # Rename file
             try:
                 renamed_file = rename_file(path, file_name, config)
             except PermissionError as exception:
@@ -95,6 +95,7 @@ def process_files(path, config_file_path):
                 not_processed_list.append(file_name)
                 continue
 
+            # Move file to target folder
             try:
                 target_directory = config['target_directory'] + "\\" + config['date'][0:4]
                 makedirs(os.path.dirname(target_directory + "\\" + renamed_file),
@@ -137,6 +138,7 @@ def get_attr_from_regex(config, regex, file_name, not_processed_list, pdf_text):
 # Main Function
 if __name__ == '__main__':
     setup_logger()
+    locale.setlocale(locale.LC_ALL, 'de_CH')
     file_path = '../resources/test_files'
     config_file_path = '../resources/config_files'
 
