@@ -1,10 +1,15 @@
+import json
 import logging
+import os
 import re
-from os import listdir
+from os import listdir, makedirs
 from os.path import isfile, join
+from pathlib import Path
+
 from data_sanitizer import sanitize_document_id, sanitize_date
 from pdf_parser import read_pdf
 from json_parser import read_json
+from pdf_sorter.file_manipulator import rename_file, move_file
 from pdf_sorter.logger import setup_logger
 
 logger = logging.getLogger(__name__)
@@ -85,9 +90,23 @@ def process_files(path, config_file_path):
             sanitized_date = sanitize_date(date)
             logger.info("Date: " + sanitized_date)
 
-            # renamed_file = rename_file(path, file_name, company, document_type, sanitized_date,
-            #                            sanitized_document_id)
-            # move_file(path, renamed_file, config['target_location'])
+            # try:
+            #     renamed_file = rename_file(path, file_name, company, document_type, sanitized_date,
+            #                                sanitized_document_id)
+            # except PermissionError as exception:
+            #     logging.warning("File not accessible: " + exception.filename + ". PDF file was not renamed.")
+            #     not_processed_list.append(file_name)
+            #     continue
+            #
+            # try:
+            #     target_directory = config['target_directory'] + "\\" + sanitized_date[0:4]
+            #     makedirs(os.path.dirname(target_directory + "\\" + renamed_file),
+            #              exist_ok=True)
+            #     move_file(path, renamed_file, target_directory)
+            # except PermissionError as exception:
+            #     logging.warning("File not accessible: " + exception.filename + ". PDF file was not moved.")
+            #     not_processed_list.append(renamed_file)
+            #     continue
 
         else:
             logger.warning("Company name and document type not found. Skipping PDF file.")
@@ -103,7 +122,8 @@ def process_files(path, config_file_path):
         output_list = ""
         for file_name in not_processed_list:
             output_list += "\n" + file_name
-        logger.warning("The following PDF files could not be processed:" + output_list)
+        logger.warning("The following PDF files could not be processed or have just been partially processed:" +
+                       output_list)
 
 
 # Main Function
