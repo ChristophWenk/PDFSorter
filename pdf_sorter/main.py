@@ -21,7 +21,7 @@ def create_document_type_list(path):
 def evaluate_document_type(text, document_type_list):
     for document_type_tuple in document_type_list:
         if document_type_tuple[1] in text:
-            logger.info("Document Type:" + document_type_tuple[1])
+            logger.info("Document Type: " + document_type_tuple[1])
             return document_type_tuple[1]
 
 
@@ -31,7 +31,7 @@ def evaluate_company(text, document_type_list):
     document_type = None
     for document_type_tuple in document_type_list:
         if document_type_tuple[0] in text:
-            logger.info("Company:" + document_type_tuple[0])
+            logger.info("Company: " + document_type_tuple[0])
             company = document_type_tuple[0]
             document_type = evaluate_document_type(text, document_type_list)
             break
@@ -49,7 +49,8 @@ def process_files(path, config_file_path):
                 "##################################")
     file_path_list = [f for f in listdir(path) if isfile(join(path, f))]
     for file_name in file_path_list:
-        logger.info("Processing file..." + file_name)
+        logger.info('======================================================')
+        logger.info("Processing file... " + file_name)
         pdf_file_path = path + '/' + file_name
         pdf_text = read_pdf(pdf_file_path)
 
@@ -61,23 +62,33 @@ def process_files(path, config_file_path):
 
             document_id_regex_config = config['regex_paterns']['document_id']
             document_id_regex = re.compile(document_id_regex_config)
-            document_id = document_id_regex.search(pdf_text).group()
+
+            if document_id_regex.search(pdf_text) is not None:
+                document_id = document_id_regex.search(pdf_text).group()
+            else:
+                logger.warning("Document ID not found. Skipping file.")
+                continue
+            sanitized_document_id = sanitize_document_id(document_id)
+            logger.info("Document ID: " + sanitized_document_id)
 
             date_regex_config = config['regex_paterns']['date']
             date_regex = re.compile(date_regex_config)
-            date = date_regex.search(pdf_text).group()
-
-            sanitized_document_id = sanitize_document_id(document_id)
+            if date_regex.search(pdf_text) is not None:
+                date = date_regex.search(pdf_text).group()
+            else:
+                logger.warning("Date not found. Skipping file.")
+                continue
             sanitized_date = sanitize_date(date)
-
-            logger.info("Document ID: " + sanitized_document_id)
             logger.info("Date: " + sanitized_date)
 
             # renamed_file = rename_file(path, file_name, company, document_type, sanitized_date,
             #                            sanitized_document_id)
             # move_file(path, renamed_file, config['target_location'])
 
-        logger.info('======================================================')
+        else:
+            logger.warning("Company name and document type not found. Skipping file.")
+            continue
+
 
 
 # Main Function
