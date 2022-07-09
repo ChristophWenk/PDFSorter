@@ -2,10 +2,11 @@ import json
 import logging
 import os
 import re
+from operator import itemgetter
+from itertools import groupby
 from os import listdir, makedirs
 from os.path import isfile, join
 from pathlib import Path
-
 from data_sanitizer import sanitize_document_id, sanitize_date
 from pdf_parser import read_pdf
 from json_parser import read_json
@@ -17,29 +18,37 @@ logger = logging.getLogger(__name__)
 
 def create_document_type_list(path):
     file_list = [f for f in listdir(path) if isfile(join(path, f))]
-    document_type_list = []
+    document_type_list = {}
+
     for file in file_list:
-        document_type_list.append(file.replace('.json', '').split('-'))
+        company, document_type = file.replace('.json', '').split('-')
+        if document_type_list.get(company):
+            document_type_list.get(company).append(document_type)
+        else:
+            document_type_list.update({company: [document_type]})
     return document_type_list
 
 
-def evaluate_document_type(text, document_type_list):
-    for document_type_tuple in document_type_list:
-        if document_type_tuple[1] in text:
-            logger.info("Document Type: " + document_type_tuple[1])
-            return document_type_tuple[1]
+# Check which document type is in scope
+def evaluate_document_type(text, document_type_list, company):
+    # Companies may appear in documents of other companies. Therefore, filter for document types that belong to the
+    # selected company.
+    for document_type in document_type_list[company]:
+        if document_type in text:
+            logger.info("Document Type: " + document_type)
+            return document_type
 
 
 # Check which company is in scope
 def evaluate_company(text, document_type_list):
     company = None
     document_type = None
-    for document_type_tuple in document_type_list:
-        if document_type_tuple[0] in text:
-            logger.info("Company: " + document_type_tuple[0])
-            company = document_type_tuple[0]
-            document_type = evaluate_document_type(text, document_type_list)
-            break
+    for company in document_type_list:
+        if company in text:
+            document_type = evaluate_document_type(text, document_type_list, company)
+            if document_type:
+                logger.info("Company: " + company)
+                break
     return company, document_type
 
 
