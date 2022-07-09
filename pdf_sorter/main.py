@@ -38,27 +38,29 @@ def evaluate_company(text, document_type_list):
     return company, document_type
 
 
-def get_config_file(company, document_type, config_file_path):
-    return read_json(config_file_path + '/' + company + '-' + document_type + '.json')
-
-
 def process_files(path, config_file_path):
     logger.info("\n"
                 "##################################\n"
                 "# Starting new PDF Sort Run\n"
                 "##################################")
+    document_type_list = create_document_type_list(config_file_path)
     file_path_list = [f for f in listdir(path) if isfile(join(path, f))]
+    not_processed_list = []
     for file_name in file_path_list:
         logger.info('======================================================')
         logger.info("Processing file... " + file_name)
+
         pdf_file_path = path + '/' + file_name
         pdf_text = read_pdf(pdf_file_path)
-
-        document_type_list = create_document_type_list(config_file_path)
         company, document_type = evaluate_company(pdf_text, document_type_list)
 
         if company is not None and document_type is not None:
-            config = get_config_file(company, document_type, config_file_path)
+            try:
+                config = read_json(config_file_path + '/' + company + '-' + document_type + '.json')
+            except FileNotFoundError as exception:
+                logging.warning("Config file not found: " + exception.filename + ". Skipping PDF file.")
+                not_processed_list.append(file_name)
+                continue
 
             document_id_regex_config = config['regex_paterns']['document_id']
             document_id_regex = re.compile(document_id_regex_config)
@@ -66,7 +68,8 @@ def process_files(path, config_file_path):
             if document_id_regex.search(pdf_text) is not None:
                 document_id = document_id_regex.search(pdf_text).group()
             else:
-                logger.warning("Document ID not found. Skipping file.")
+                logger.warning("Document ID not found. Skipping PDF file.")
+                not_processed_list.append(file_name)
                 continue
             sanitized_document_id = sanitize_document_id(document_id)
             logger.info("Document ID: " + sanitized_document_id)
@@ -77,6 +80,7 @@ def process_files(path, config_file_path):
                 date = date_regex.search(pdf_text).group()
             else:
                 logger.warning("Date not found. Skipping file.")
+                not_processed_list.append(file_name)
                 continue
             sanitized_date = sanitize_date(date)
             logger.info("Date: " + sanitized_date)
@@ -86,9 +90,20 @@ def process_files(path, config_file_path):
             # move_file(path, renamed_file, config['target_location'])
 
         else:
-            logger.warning("Company name and document type not found. Skipping file.")
+            logger.warning("Company name and document type not found. Skipping PDF file.")
+            not_processed_list.append(file_name)
             continue
 
+    logger.info('======================================================')
+    logger.info("\n"
+                "##################################\n"
+                "# PDF Sort Run completed\n"
+                "##################################")
+    if not_processed_list:
+        output_list = ""
+        for file_name in not_processed_list:
+            output_list += "\n" + file_name
+        logger.warning("The following PDF files could not be processed:" + output_list)
 
 
 # Main Function
