@@ -24,7 +24,11 @@ General functionality should look like this:
 - pypdf2 2.4.2
 - dateparser 1.1.1
 
-Other Python or package versions might work but have not been tested.
+Other Python or package versions might work but have not been tested. 
+
+A conda environment configuration is provided in 
+the `environment.yml` file. You can set it up with `conda env create -f environment.yml`. Activate it with
+`conda activate PDFSorter`.
 
 ## Document Type Configuration
 New document types can be added by creating new configuration files. The process is described below.
