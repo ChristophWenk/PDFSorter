@@ -90,7 +90,7 @@ pdf_files_dir = 'F:/Downloads/02_pdf_sorter'
 config_files_dir = '../resources/config_files'
 
 # Folder that contains script log files
-log_files_dir = '../generated/logs'
+log_files_dir = '../generated/logs/'
 ```
 
 ### Language configurations for date operations
