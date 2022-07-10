@@ -70,7 +70,8 @@ the configuration file and may include property keys generated from the regex pa
 ```
 
 ## Script settings
-The script can be customized in multiple ways. The process is described below.
+The script can be customized in multiple ways. The process is described below. To do so edit the settings in the
+file `settings.py`.
 
 ### Dry Run (Preview) Mode
 If the script should only be tested but the files should not be altered one can activate dry run mode. 

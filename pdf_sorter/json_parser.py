@@ -1,6 +1,5 @@
 import json
 import io
-import logging
 
 
 def read_json(config_file):
