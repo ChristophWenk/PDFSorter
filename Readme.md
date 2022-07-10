@@ -1,10 +1,11 @@
 # Requirements
+## User Stories
 - As a user I want a script to determine to which company a PDF belongs to
 - As a user I want a script to determine which type of document a PDF is
 - As a user I want a script to rename a file according to a predefined format
 - As a user I want a script to sort PDFs into given folders according to a company and document type
 
-# Architecture
+## Functional & non-functional Requirements
 The script should be configurable with document type configurations.
 General functionality should look like this:
 1. Check which company is in scope
@@ -13,9 +14,21 @@ General functionality should look like this:
 4. Rename PDFs according to the configuration file
 5. Move PDFs to the target location
 
-## Document type configuration
+# Architecture
+## Prerequisites
+**Basic Prerequisites**
+- Python 3.10.4
+- pip 21.2.4
+
+**Python Packages**
+- pypdf2 2.4.2
+- dateparser 1.1.1
+
+Other Python or package versions might work but have not been tested.
+
+## Document Type Configuration
 New document types can be added by creating new configuration files. The process is described below.
-### Configuration file name
+### Configuration File Name
 The configuration file name has to adhere to the scheme below. The [Company] and the [Document Type] values have both 
 to be found in the PDF text content. This will only be used to select the correct configuration file for the PDF in 
 processing. 
@@ -24,7 +37,7 @@ processing.
 
 **Example:** Helsana-Leistungsabrechnung.json
 
-### Configuration file structure (Example Helsana-Leistungsabrechnung.json)
+### Configuration File Structure (Example Helsana-Leistungsabrechnung.json)
 ```
 {
     "company_name": "Helsana",
@@ -52,7 +65,7 @@ will generate folders by year within this directory.
 `file_name_format` defines the new name of the processed PDF file. The tokens refer to the top-level properties in 
 the configuration file and may include property keys generated from the regex patterns.
 
-### Configuration structure after parsing the regex patterns (in-memory only)
+### Configuration Structure after Parsing the Regex Patterns (In-Memory only)
 ```
 {
     "company_name": "Helsana",
@@ -70,7 +83,8 @@ the configuration file and may include property keys generated from the regex pa
 ```
 
 ## Script settings
-The script can be customized in multiple ways. The process is described below.
+The script can be customized in multiple ways. The process is described below. To do so edit the settings in the
+file `settings.py`.
 
 ### Dry Run (Preview) Mode
 If the script should only be tested but the files should not be altered one can activate dry run mode. 
@@ -80,7 +94,7 @@ The generated names and directories will still be logged. To do so apply the fol
 dry_run = True
 ```
 
-### Folder configurations
+### Folder Configurations
 The following folder configurations can be customized:
 ```
 # Folder that contains the PDFs to process
@@ -93,7 +107,7 @@ config_files_dir = '../resources/config_files'
 log_files_dir = '../generated/logs/'
 ```
 
-### Language configurations for date operations
+### Language Configurations for Date Operations
 Set language that will be used to write the names of the months / days of the week
 ```
 # Language configurations for date operations (e.g. names of the months)
