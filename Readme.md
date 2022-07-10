@@ -24,10 +24,16 @@ General functionality should look like this:
 - pypdf2 2.4.2
 - dateparser 1.1.1
 
-Other Python or package versions might work but have not been tested.
+Other Python or package versions might work but have not been tested. 
+
+A conda environment configuration is provided in 
+the `environment.yml` file. You can set it up with `conda env create -f environment.yml`. Activate it with
+`conda activate PDFSorter`.
 
 ## Document Type Configuration
 New document types can be added by creating new configuration files. The process is described below.
+Place the files in the directory defined in `settings.config_files_dir`. 
+The default is `'../resources/config_files'`.
 ### Configuration File Name
 The configuration file name has to adhere to the scheme below. The [Company] and the [Document Type] values have both 
 to be found in the PDF text content. This will only be used to select the correct configuration file for the PDF in 
@@ -78,7 +84,7 @@ the configuration file and may include property keys generated from the regex pa
     "target_directory": "F:\\Dokumente\\Rechnungen\\Helsana\\Leistungsabrechnungen",
     "file_name_format":  "{company_name}_{date}_{document_type}_{document_id}.pdf",
     "document_id": "ABCD",
-    "date": "2022-01-01"
+    "date": "2022-12-31"
 }
 ```
 

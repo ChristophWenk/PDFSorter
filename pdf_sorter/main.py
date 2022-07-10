@@ -60,10 +60,9 @@ def get_attr_from_regex(config, regex, file_name, not_processed_list, pdf_text):
 
 
 def process_files(path, config_file_path):
-    logger.info("\n"
-                "##################################\n"
-                "# Starting new PDF Sort Run      #\n"
-                "##################################")
+    logger.info("##################################")
+    logger.info("# Starting new PDF Sort Run      #")
+    logger.info("##################################")
     if settings.dry_run is True:
         logger.warning("Dry Run active: Running in preview mode. No files will be renamed or moved.")
 
@@ -118,17 +117,15 @@ def process_files(path, config_file_path):
             continue
 
     logger.info('==============================================================================================')
-    logger.info("\n"
-                "##################################\n"
-                "# PDF Sort Run completed         #\n"
-                "##################################")
+    logger.info("##################################")
+    logger.info("# PDF Sort Run completed         #")
+    logger.info("##################################")
 
     if not_processed_list:
+        logger.warning("The following PDF files could not be processed or have just been partially processed:")
         output_list = ""
         for file_name in not_processed_list:
-            output_list += "\n" + file_name
-        logger.warning("The following PDF files could not be processed or have just been partially processed:" +
-                       output_list)
+            logger.warning(file_name)
 
 
 # Main Function

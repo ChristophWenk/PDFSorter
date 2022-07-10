@@ -2,7 +2,7 @@ import locale
 import logging
 
 # Do (False) or do not (True) rename files and move them
-dry_run = True
+dry_run = False
 
 # Folder that contains the PDFs to process
 pdf_files_dir = 'F:/Downloads/02_pdf_sorter'
