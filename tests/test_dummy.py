@@ -1,2 +1,3 @@
 if __name__ == '__main__':
-    print("Dummy Test")
+    print("This is a dummy test.")
+    assert True
