@@ -28,6 +28,8 @@ Other Python or package versions might work but have not been tested.
 
 ## Document Type Configuration
 New document types can be added by creating new configuration files. The process is described below.
+Place the files in the directory defined in `settings.config_files_dir`. 
+The default is `'../resources/config_files'`.
 ### Configuration File Name
 The configuration file name has to adhere to the scheme below. The [Company] and the [Document Type] values have both 
 to be found in the PDF text content. This will only be used to select the correct configuration file for the PDF in 
