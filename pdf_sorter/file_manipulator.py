@@ -11,6 +11,7 @@ def rename_file(path, old_name, config):
         values.update({key: config[key]})
     new_name = ""
     try:
+        # Replace tokens with dictionary values
         new_name = config['file_name_format'].format(**values)
     except KeyError as exception:
         logging.warning("Expected Token named " + exception + " but it was not found. Skipping rename.")

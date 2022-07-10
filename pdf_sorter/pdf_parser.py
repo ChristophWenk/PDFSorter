@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__)
 
 def print_metadata(pdf_file):
     # printing number of pages in pdf file
-    logger.info("Total number of pages: " + pdf_file.numPages.__str__())
+    logger.debug("Total number of pages: " + pdf_file.numPages.__str__())
     return pdf_file.numPages
 
 

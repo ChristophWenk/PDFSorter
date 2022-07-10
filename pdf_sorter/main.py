@@ -20,6 +20,7 @@ def create_document_type_list(path):
 
     for file in file_list:
         company, document_type = file.replace('.json', '').split('-')
+        logger.debug("Company: " + company + ", Document Type: " + document_type)
         if document_type_list.get(company):
             document_type_list.get(company).append(document_type)
         else:
@@ -28,7 +29,7 @@ def create_document_type_list(path):
 
 
 # Check which document type is in scope
-def evaluate_document_type(text, document_type_list, company):
+def get_document_type(text, document_type_list, company):
     # Companies may appear in documents of other companies. Therefore, filter for document types that belong to the
     # selected company.
     for document_type in document_type_list[company]:
@@ -38,16 +39,25 @@ def evaluate_document_type(text, document_type_list, company):
 
 
 # Check which company is in scope
-def evaluate_company(text, document_type_list):
+def get_company(text, document_type_list):
     company = None
     document_type = None
     for company in document_type_list:
         if company in text:
-            document_type = evaluate_document_type(text, document_type_list, company)
+            document_type = get_document_type(text, document_type_list, company)
             if document_type:
                 logger.info("Company: " + company)
                 break
     return company, document_type
+
+
+def get_attr_from_regex(config, regex, file_name, not_processed_list, pdf_text):
+    regex_config = config['regex_paterns'][regex]
+    compiled_regex = re.compile(regex_config)
+    if compiled_regex.search(pdf_text) is not None:
+        return compiled_regex.search(pdf_text).group()
+    else:
+        raise ValueError(regex)
 
 
 def process_files(path, config_file_path):
@@ -62,12 +72,12 @@ def process_files(path, config_file_path):
         logger.info('======================================================')
         logger.info("Processing file... " + file_name)
 
-        pdf_file_path = path + '/' + file_name
-        pdf_text = read_pdf(pdf_file_path)
-        company, document_type = evaluate_company(pdf_text, document_type_list)
+        pdf_text = read_pdf(path + '/' + file_name)
+        company, document_type = get_company(pdf_text, document_type_list)
 
         if company is not None and document_type is not None:
             try:
+                # Get config values for current PDF
                 config = read_json(config_file_path + '/' + company + '-' + document_type + '.json')
             except FileNotFoundError as exception:
                 logging.warning("Config file not found: " + exception.filename + ". Skipping PDF file.")
@@ -81,6 +91,7 @@ def process_files(path, config_file_path):
                                                           pdf_text)
                     sanitized_attr = sanitize_attr(attribute_value, regex_key)
                     config.update({regex_key: sanitized_attr})
+
                 # Rename file
                 renamed_file = rename_file(path, file_name, config)
 
@@ -94,11 +105,11 @@ def process_files(path, config_file_path):
                 not_processed_list.append(file_name)
                 continue
             except PermissionError as exception:
-                logging.warning("File not accessible: " + exception.filename + ". PDF file was not renamed.")
+                logging.warning("File not accessible: " + exception.filename + ". PDF file was not renamed or moved.")
                 not_processed_list.append(file_name)
                 continue
         else:
-            logger.warning("Company name and document type not found. Skipping PDF file.")
+            logger.warning("Company name and/or document type not found. Skipping PDF file.")
             not_processed_list.append(file_name)
             continue
 
@@ -107,21 +118,13 @@ def process_files(path, config_file_path):
                 "##################################\n"
                 "# PDF Sort Run completed\n"
                 "##################################")
+
     if not_processed_list:
         output_list = ""
         for file_name in not_processed_list:
             output_list += "\n" + file_name
         logger.warning("The following PDF files could not be processed or have just been partially processed:" +
                        output_list)
-
-
-def get_attr_from_regex(config, regex, file_name, not_processed_list, pdf_text):
-    regex_config = config['regex_paterns'][regex]
-    compiled_regex = re.compile(regex_config)
-    if compiled_regex.search(pdf_text) is not None:
-        return compiled_regex.search(pdf_text).group()
-    else:
-        raise ValueError(regex)
 
 
 # Main Function
