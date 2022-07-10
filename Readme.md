@@ -1,8 +1,8 @@
 # Requirements
-- As a user I want the script to determine to which company the PDF belongs to
-- As a user I want the script to determine which type of document the PDF is
-- As a user I want the script to rename the file according to a predefined format
-- As a user I want the script to sort the PDFs into given folders according to company and document type
+- As a user I want a script to determine to which company a PDF belongs to
+- As a user I want a script to determine which type of document a PDF is
+- As a user I want a script to rename a file according to a predefined format
+- As a user I want a script to sort PDFs into given folders according to a company and document type
 
 # Architecture
 The script should be configurable with document type configurations.
