@@ -74,38 +74,29 @@ def process_files(path, config_file_path):
                 not_processed_list.append(file_name)
                 continue
 
-            # Read out attribute values from PDF and sanitize them
             try:
+                # Read out attribute values from PDF and sanitize them
                 for regex_key in config['regex_paterns']:
-                    try:
-                        attribute_value = get_attr_from_regex(config, regex_key, file_name, not_processed_list,
-                                                              pdf_text)
-                        sanitized_attr = sanitize_attr(attribute_value, regex_key)
-                        config.update({regex_key: sanitized_attr})
-                    except ValueError:
-                        raise ValueError
-            except ValueError:
-                break
-
-            # Rename file
-            try:
+                    attribute_value = get_attr_from_regex(config, regex_key, file_name, not_processed_list,
+                                                          pdf_text)
+                    sanitized_attr = sanitize_attr(attribute_value, regex_key)
+                    config.update({regex_key: sanitized_attr})
+                # Rename file
                 renamed_file = rename_file(path, file_name, config)
-            except PermissionError as exception:
-                logging.warning("File not accessible: " + exception.filename + ". PDF file was not renamed.")
-                not_processed_list.append(file_name)
-                continue
 
-            # Move file to target folder
-            try:
+                # Move file to target folder
                 target_directory = config['target_directory'] + "\\" + config['date'][0:4]
                 makedirs(os.path.dirname(target_directory + "\\" + renamed_file),
                          exist_ok=True)
                 move_file(path, renamed_file, target_directory)
-            except PermissionError as exception:
-                logging.warning("File not accessible: " + exception.filename + ". PDF file was not moved.")
-                not_processed_list.append(renamed_file)
+            except ValueError as exception:
+                logger.warning("Value for Regular Expression " + exception.args[0] + " not found. Skipping PDF file.")
+                not_processed_list.append(file_name)
                 continue
-
+            except PermissionError as exception:
+                logging.warning("File not accessible: " + exception.filename + ". PDF file was not renamed.")
+                not_processed_list.append(file_name)
+                continue
         else:
             logger.warning("Company name and document type not found. Skipping PDF file.")
             not_processed_list.append(file_name)
@@ -130,9 +121,7 @@ def get_attr_from_regex(config, regex, file_name, not_processed_list, pdf_text):
     if compiled_regex.search(pdf_text) is not None:
         return compiled_regex.search(pdf_text).group()
     else:
-        logger.warning("Value for Regular Expression " + regex + " not found. Skipping PDF file.")
-        not_processed_list.append(file_name)
-        raise ValueError(regex + ' not found')
+        raise ValueError(regex)
 
 
 # Main Function
