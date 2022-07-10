@@ -52,7 +52,7 @@ def get_company(text, document_type_list):
 
 
 def get_attr_from_regex(config, regex, file_name, not_processed_list, pdf_text):
-    regex_config = config['regex_paterns'][regex]
+    regex_config = config['regex_patterns'][regex]
     compiled_regex = re.compile(regex_config)
     if compiled_regex.search(pdf_text) is not None:
         return compiled_regex.search(pdf_text).group()
@@ -86,7 +86,7 @@ def process_files(path, config_file_path):
 
             try:
                 # Read out attribute values from PDF and sanitize them
-                for regex_key in config['regex_paterns']:
+                for regex_key in config['regex_patterns']:
                     attribute_value = get_attr_from_regex(config, regex_key, file_name, not_processed_list,
                                                           pdf_text)
                     sanitized_attr = sanitize_attr(attribute_value, regex_key)

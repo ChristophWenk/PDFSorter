@@ -26,7 +26,7 @@ Helsana-Leistungsabrechnung-20220628
 {
     "company_name": "Helsana"
     "document_type": "Leistungsabrechnung"
-    "regex_paterns": 
+    "regex_patterns": 
     { 
         "document_id": "Rechnung Nr. .*"
         "date": "(?<=Dübendorf\n)(.*)(?=\nLeistungsabrechnung)"
