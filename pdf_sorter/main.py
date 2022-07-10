@@ -6,6 +6,7 @@ from os.path import isfile, join
 from data_sanitizer import sanitize_attr
 from json_parser import read_json
 from pdf_parser import read_pdf
+from pdf_sorter import settings
 from pdf_sorter.file_manipulator import rename_file, move_file
 from pdf_sorter.logger import setup_logger
 
@@ -61,13 +62,16 @@ def get_attr_from_regex(config, regex, file_name, not_processed_list, pdf_text):
 def process_files(path, config_file_path):
     logger.info("\n"
                 "##################################\n"
-                "# Starting new PDF Sort Run\n"
+                "# Starting new PDF Sort Run      #\n"
                 "##################################")
+    if settings.dry_run is True:
+        logger.warning("Dry Run active: Running in preview mode. No files will be renamed or moved.")
+
     document_type_list = create_document_type_list(config_file_path)
     file_path_list = [f for f in listdir(path) if isfile(join(path, f))]
     not_processed_list = []
     for file_name in file_path_list:
-        logger.info('======================================================')
+        logger.info('==============================================================================================')
         logger.info("Processing file... " + file_name)
 
         pdf_text = read_pdf(path + '/' + file_name)
@@ -113,10 +117,10 @@ def process_files(path, config_file_path):
             not_processed_list.append(file_name)
             continue
 
-    logger.info('======================================================')
+    logger.info('==============================================================================================')
     logger.info("\n"
                 "##################################\n"
-                "# PDF Sort Run completed\n"
+                "# PDF Sort Run completed         #\n"
                 "##################################")
 
     if not_processed_list:
@@ -131,7 +135,7 @@ def process_files(path, config_file_path):
 if __name__ == '__main__':
     setup_logger()
 
-    file_path = '../resources/test_files'
+    file_path = 'F:/Downloads/02_pdf_sorter'
     config_file_path = '../resources/config_files'
 
     process_files(file_path, config_file_path)
