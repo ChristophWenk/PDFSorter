@@ -34,7 +34,7 @@ def get_document_type(text, document_type_list, company):
     # selected company.
     for document_type in document_type_list[company]:
         if document_type in text:
-            logger.info("Document Type: " + document_type)
+            logger.debug("Document Type retrieved from config file name: " + document_type)
             return document_type
 
 
@@ -46,7 +46,7 @@ def get_company(text, document_type_list):
         if company in text:
             document_type = get_document_type(text, document_type_list, company)
             if document_type:
-                logger.info("Company: " + company)
+                logger.debug("Company retrieved from config file name: " + company)
                 break
     return company, document_type
 
@@ -79,6 +79,8 @@ def process_files(path, config_file_path):
             try:
                 # Get config values for current PDF
                 config = read_json(config_file_path + '/' + company + '-' + document_type + '.json')
+                logger.info("company_name: " + config['company_name'])
+                logger.info("document_type: " + config['document_type'])
             except FileNotFoundError as exception:
                 logging.warning("Config file not found: " + exception.filename + ". Skipping PDF file.")
                 not_processed_list.append(file_name)
