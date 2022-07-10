@@ -78,7 +78,7 @@ the configuration file and may include property keys generated from the regex pa
     "target_directory": "F:\\Dokumente\\Rechnungen\\Helsana\\Leistungsabrechnungen",
     "file_name_format":  "{company_name}_{date}_{document_type}_{document_id}.pdf",
     "document_id": "ABCD",
-    "date": "2022-01-01"
+    "date": "2022-12-31"
 }
 ```
 
