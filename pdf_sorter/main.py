@@ -1,4 +1,3 @@
-import locale
 import logging
 import os
 import re
@@ -7,7 +6,6 @@ from os.path import isfile, join
 from data_sanitizer import sanitize_attr
 from json_parser import read_json
 from pdf_parser import read_pdf
-from pdf_sorter import settings
 from pdf_sorter.file_manipulator import rename_file, move_file
 from pdf_sorter.logger import setup_logger
 
@@ -133,7 +131,6 @@ def process_files(path, config_file_path):
 if __name__ == '__main__':
     setup_logger()
 
-    locale.setlocale(locale.LC_ALL, 'de_CH')
     file_path = '../resources/test_files'
     config_file_path = '../resources/config_files'
 
