@@ -8,10 +8,10 @@ dry_run = True
 pdf_files_dir = 'F:/Downloads/02_pdf_sorter'
 
 # Folder that contains the document configuration files
-config_files_dir = 'F:/Christoph/Sonstiges/Development/PDFSorter/resources/config_files'
+config_files_dir = '../resources/config_files'
 
 # Folder that contains script log files
-log_files_dir = 'F:/Christoph/Sonstiges/Development/PDFSorter/target/logs'
+log_files_dir = '../generated/logs/'
 
 # Language configurations for date operations (e.g. names of the months)
 locale.setlocale(locale.LC_ALL, 'de_CH')

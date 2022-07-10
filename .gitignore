@@ -212,8 +212,9 @@ dmypy.json
 cython_debug/
 
 ####################################################
-# My Ignores
+# PDF Sorter Ignores
 ####################################################
 .idea/
 *.pdf
 resources/
+generated/
