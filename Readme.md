@@ -34,7 +34,7 @@ processing.
         "document_id": "(?<=Rechnung Nr. )(.*)(\\n)",
         "date": "(?<=Dübendorf\\n)(.*)(?=\\nLeistungsabrechnung)"
     },
-    "target_directory": "F:\\Christoph\\Verwaltung\\Finanzen\\Rechnungen\\Helsana\\Leistungsabrechnungen",
+    "target_directory": "F:\\Dokumente\\Rechnungen\\Helsana\\Leistungsabrechnungen",
     "file_name_format":  "{company_name}_{date}_{document_type}_{document_id}.pdf"
 }
 ```
