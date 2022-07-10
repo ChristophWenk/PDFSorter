@@ -6,9 +6,9 @@ from os.path import isfile, join
 from data_sanitizer import sanitize_attr
 from json_parser import read_json
 from pdf_parser import read_pdf
-from pdf_sorter import settings
-from pdf_sorter.file_manipulator import rename_file, move_file
-from pdf_sorter.logger import setup_logger
+import settings
+from file_manipulator import rename_file, move_file
+from logger import setup_logger
 
 logger = logging.getLogger(__name__)
 
@@ -135,7 +135,4 @@ def process_files(path, config_file_path):
 if __name__ == '__main__':
     setup_logger()
 
-    file_path = 'F:/Downloads/02_pdf_sorter'
-    config_file_path = '../resources/config_files'
-
-    process_files(file_path, config_file_path)
+    process_files(settings.pdf_files_dir, settings.config_files_dir)
