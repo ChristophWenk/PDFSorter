@@ -2,6 +2,8 @@ import logging
 import warnings
 from datetime import datetime
 
+from PyPDF2.errors import PdfReadWarning
+
 
 def setup_logger():
     logging_format = '%(asctime)-25s %(module)-18s %(levelname)-10s %(message)-8s'
@@ -13,4 +15,4 @@ def setup_logger():
         logging.StreamHandler()  # Write to console
     ])
 
-    warnings.filterwarnings("ignore", message="Superfluous whitespace found in object header")
+    warnings.filterwarnings("ignore", category=PdfReadWarning)

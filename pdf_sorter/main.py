@@ -4,7 +4,6 @@ import os
 import re
 from os import listdir, makedirs
 from os.path import isfile, join
-
 from data_sanitizer import sanitize_attr
 from json_parser import read_json
 from pdf_parser import read_pdf
