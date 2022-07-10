@@ -52,7 +52,7 @@ will generate folders by year within this directory.
 `file_name_format` defines the new name of the processed PDF file. The tokens refer to the top-level properties in 
 the configuration file and may include property keys generated from the regex patterns.
 
-#### Configuration structure after parsing the regex patterns (in-memory only)
+### Configuration structure after parsing the regex patterns (in-memory only)
 ```
 {
     "company_name": "Helsana",
