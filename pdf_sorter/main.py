@@ -85,7 +85,7 @@ def process_files(path, config_file_path):
                 continue
 
             try:
-                # Read out attribute values from PDF and sanitize them
+                # Read out attribute values from PDF, sanitize them and attach them to config
                 for regex_key in config['regex_patterns']:
                     attribute_value = get_attr_from_regex(config, regex_key, file_name, not_processed_list,
                                                           pdf_text)
