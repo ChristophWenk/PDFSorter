@@ -123,7 +123,6 @@ def process_files(path, config_file_path):
 
     if not_processed_list:
         logger.warning("The following PDF files could not be processed or have just been partially processed:")
-        output_list = ""
         for file_name in not_processed_list:
             logger.warning(file_name)
 
