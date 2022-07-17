@@ -19,12 +19,19 @@ def sanitize_date(date):
     return date
 
 
+def sanitize_account_name(account_name):
+    account_name = account_name.replace(' ', '')
+    return account_name
+
+
 def sanitize_attr(attribute_value, regex_key):
     match regex_key:
         case "document_id":
             sanitized_value = sanitize_document_id(attribute_value)
         case "date":
             sanitized_value = sanitize_date(attribute_value)
+        case "accout_name":
+            sanitized_value = sanitize_account_name(attribute_value)
         case _:
             sanitized_value = attribute_value
 

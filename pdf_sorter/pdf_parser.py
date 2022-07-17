@@ -3,6 +3,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def print_metadata(pdf_file):
     # printing number of pages in pdf file
     logger.debug("Total number of pages: " + pdf_file.numPages.__str__())
