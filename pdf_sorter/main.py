@@ -120,8 +120,13 @@ def process_files(path, config_file_path):
         document_type_dates_list = sorted(get_dates_for_document_types(document_type,
                                                                        document_types_configuration_list))
 
-        config = update_config_from_regex(pdf_text, document_type_dates_list, config_file_path, company,
-                                          document_type)
+        try:
+            config = update_config_from_regex(pdf_text, document_type_dates_list, config_file_path, company,
+                                              document_type)
+        except FileNotFoundError as exception:
+            logging.warning("Config file not found: " + exception.filename + ". Skipping PDF file.")
+            not_processed_list.append(file_name)
+            continue
         if not config:
             logger.warning("One or more values for regular expressions not found. Skipping PDF file.")
             not_processed_list.append(file_name)
