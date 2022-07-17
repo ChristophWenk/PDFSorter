@@ -15,26 +15,45 @@ logger = logging.getLogger(__name__)
 
 def create_document_type_list(path):
     file_list = [f for f in listdir(path) if isfile(join(path, f))]
-    document_type_list = {}
+    document_type_dict = {}
 
     for file in file_list:
         company, document_type, config_date = file.replace('.json', '').split('-')
         logger.debug("Company: " + company + ", Document Type: " + document_type + ", Config Date: " + config_date)
-        if document_type_list.get(company):
-            document_type_list.get(company).append(document_type)
+        # Add document type to company if it exists in the dictionary already
+        if document_type_dict.get(company):
+            document_type_dict.get(company).get('document_type_configurations').append(
+                {
+                    'document_type': document_type,
+                    'config_date': config_date
+                }
+            )
+        # Add company to dictionary
         else:
-            document_type_list.update({company: [document_type]})
-    return document_type_list
+            document_type_dict.update(
+                {
+                    company:
+                    {
+                        'document_type_configurations':
+                            [{
+                                'document_type': document_type,
+                                'config_date': config_date
+                            }]
+                    }
+                }
+            )
+    return document_type_dict
 
 
 # Check which document type is in scope
 def get_document_type(text, document_type_list, company):
     # Companies may appear in documents of other companies. Therefore, filter for document types that belong to the
     # selected company.
-    for document_type in document_type_list[company]:
-        if document_type in text:
-            logger.debug("Document Type retrieved from config file name: " + document_type)
-            return document_type
+    for document_type_config in document_type_list[company].get('document_type_configurations'):
+        document_type_config.get('document_type')
+        if document_type_config.get('document_type') in text:
+            logger.debug("Document Type retrieved from config file name: " + document_type_config.get('document_type'))
+            return document_type_config.get('document_type')
 
 
 # Check which company is in scope
