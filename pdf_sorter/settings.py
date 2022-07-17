@@ -2,7 +2,7 @@ import locale
 import logging
 
 # Do (False) or do not (True) rename files and move them
-dry_run = True
+dry_run = False
 
 # Folder that contains the PDFs to process
 pdf_files_dir = 'F:/Downloads/02_pdf_sorter'
@@ -17,4 +17,4 @@ log_files_dir = '../generated/logs/'
 locale.setlocale(locale.LC_ALL, 'de_CH')
 
 # Log level used by the common logger
-log_level = logging.DEBUG
+log_level = logging.INFO
