@@ -25,6 +25,7 @@ def sanitize_account_name(account_name):
 
 
 def sanitize_attr(attribute_value, regex_key):
+    logger.debug("[PRE SANITIZATION] " + regex_key + ": " + attribute_value)
     match regex_key:
         case "document_id":
             sanitized_value = sanitize_document_id(attribute_value)

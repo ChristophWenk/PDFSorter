@@ -123,17 +123,14 @@ def process_files(path, config_file_path):
         try:
             config = update_config_from_regex(pdf_text, document_type_dates_list, config_file_path, company,
                                               document_type)
+            if not config:
+                logger.warning("One or more values for regular expressions not found. Skipping PDF file.")
+                not_processed_list.append(file_name)
+                continue
         except FileNotFoundError as exception:
             logging.warning("Config file not found: " + exception.filename + ". Skipping PDF file.")
             not_processed_list.append(file_name)
             continue
-        if not config:
-            logger.warning("One or more values for regular expressions not found. Skipping PDF file.")
-            not_processed_list.append(file_name)
-            continue
-
-        logger.info("company_name: " + config['company_name'])
-        logger.info("document_type: " + config['document_type'])
 
         try:
             # Rename file
@@ -183,7 +180,7 @@ def update_config_from_regex(pdf_text, document_type_dates_list, config_file_pat
             return config
     except ValueError as exception:
         logging.warning("Could not parse Regex " + exception.args[0] + " in config file: " + config_file_name)
-        update_config_from_regex(pdf_text, document_type_dates_list, config_file_path, company, document_type)
+        return update_config_from_regex(pdf_text, document_type_dates_list, config_file_path, company, document_type)
 
 
 # Main Function
