@@ -18,8 +18,8 @@ def create_document_type_list(path):
     document_type_list = {}
 
     for file in file_list:
-        company, document_type = file.replace('.json', '').split('-')
-        logger.debug("Company: " + company + ", Document Type: " + document_type)
+        company, document_type, config_date = file.replace('.json', '').split('-')
+        logger.debug("Company: " + company + ", Document Type: " + document_type + ", Config Date: " + config_date)
         if document_type_list.get(company):
             document_type_list.get(company).append(document_type)
         else:
