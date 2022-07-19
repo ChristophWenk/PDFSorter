@@ -164,6 +164,7 @@ def update_config_from_regex(pdf_text, document_type_dates_list, config_file_pat
     config_file_name = ''
     try:
         if document_type_dates_list:
+            # Get newest config date
             config_date = document_type_dates_list.pop()
 
             config_file_name = config_file_path + '/' + company + '-' + document_type + '-' + config_date + '.json'
