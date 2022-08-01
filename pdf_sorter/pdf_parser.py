@@ -15,8 +15,11 @@ def read_pdf(file_path):
     pdf_file = PyPDF2.PdfFileReader(file)
     print_metadata(pdf_file)
 
-    # Only read the first page as it contains all necessary information
-    pdf_page = pdf_file.getPage(0)
-    pdf_text = pdf_page.extractText()
+    pdf_text = ""
+    i = 0
+    while i < pdf_file.numPages:
+        pdf_page = pdf_file.getPage(i)
+        pdf_text += pdf_page.extractText()
+        i += 1
     file.close()
     return pdf_text
