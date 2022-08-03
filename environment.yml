@@ -1,8 +1,6 @@
 name: PDFSorter
 channels:
   - defaults
-  - free
-channel_priority: flexible
 dependencies:
   - dateparser=1.1.1
   - pip=21.2.4
