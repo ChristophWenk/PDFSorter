@@ -127,6 +127,7 @@ def process_files(path, config_file_path):
                 logger.warning("One or more values for regular expressions not found. Skipping PDF file.")
                 not_processed_list.append(file_name)
                 continue
+
         except FileNotFoundError as exception:
             logging.warning("Config file not found: " + exception.filename + ". Skipping PDF file.")
             not_processed_list.append(file_name)
@@ -141,11 +142,6 @@ def process_files(path, config_file_path):
             makedirs(os.path.dirname(target_directory + "\\" + renamed_file),
                      exist_ok=True)
             move_file(path, renamed_file, target_directory)
-
-        except FileNotFoundError as exception:
-            logging.warning("Config file not found: " + exception.filename + ". Skipping PDF file.")
-            not_processed_list.append(file_name)
-            continue
 
         except PermissionError as exception:
             logging.warning("File not accessible: " + exception.filename + ". PDF file was not renamed or moved.")
@@ -168,6 +164,7 @@ def update_config_from_regex(pdf_text, document_type_dates_list, config_file_pat
     config_file_name = ''
     try:
         if document_type_dates_list:
+            # Get newest config date
             config_date = document_type_dates_list.pop()
 
             config_file_name = config_file_path + '/' + company + '-' + document_type + '-' + config_date + '.json'
