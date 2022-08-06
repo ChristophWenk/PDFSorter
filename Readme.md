@@ -24,7 +24,10 @@ General functionality should look like this:
 - pypdf2 2.4.2
 - dateparser 1.1.1
 
-Other Python or package versions might work but have not been tested. 
+Other Python or package versions might work but have not been tested.
+> :warning: **Formatting with different pypdf2 versions**: Different versions of pypdf2 output differently styled text.
+> E.g. The output of 2.4.2 looks very different from 2.9.0. Be aware of this when you write your regexes.
+> They might not work with different versions of pypdf2.
 
 A conda environment configuration is provided in 
 the `environment.yml` file. You can set it up with `conda env create -f environment.yml`. Activate it with
