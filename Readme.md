@@ -42,11 +42,11 @@ The configuration file name has to adhere to the scheme below. The [Company] and
 to be found in the PDF text content. This will only be used to select the correct configuration file for the PDF in 
 processing. 
 
-**Scheme:** [Company]-[Document Type].json
+**Scheme:** [Company]-[Document Type]-[Creation Date].json
 
-**Example:** Helsana-Leistungsabrechnung.json
+**Example:** Helsana-Leistungsabrechnung-20220717.json
 
-### Configuration File Structure (Example Helsana-Leistungsabrechnung.json)
+### Configuration File Structure (Example Helsana-Leistungsabrechnung-20220717.json)
 ```
 {
     "company_name": "Helsana",

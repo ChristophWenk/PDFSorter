@@ -93,11 +93,11 @@ def get_dates_for_document_types(document_type, document_type_configuration_list
 
 
 def process_files(path, config_file_path):
+    if settings.dry_run is True:
+        logger.warning("Dry Run active: Running in preview mode. No files will be renamed or moved.")
     logger.info("##################################")
     logger.info("# Starting new PDF Sort Run      #")
     logger.info("##################################")
-    if settings.dry_run is True:
-        logger.warning("Dry Run active: Running in preview mode. No files will be renamed or moved.")
 
     document_type_dictionary = create_document_type_dictionary(config_file_path)
     file_path_list = [f for f in listdir(path) if isfile(join(path, f))]
