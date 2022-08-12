@@ -24,7 +24,10 @@ General functionality should look like this:
 - pypdf2 2.4.2
 - dateparser 1.1.1
 
-Other Python or package versions might work but have not been tested. 
+Other Python or package versions might work but have not been tested.
+> :warning: **Formatting with different pypdf2 versions**: Different versions of pypdf2 output differently styled text.
+> E.g. The output of 2.4.2 looks very different from 2.9.0. Be aware of this when you write your regexes.
+> They might not work with different versions of pypdf2.
 
 A conda environment configuration is provided in 
 the `environment.yml` file. You can set it up with `conda env create -f environment.yml`. Activate it with
@@ -39,11 +42,11 @@ The configuration file name has to adhere to the scheme below. The [Company] and
 to be found in the PDF text content. This will only be used to select the correct configuration file for the PDF in 
 processing. 
 
-**Scheme:** [Company]-[Document Type].json
+**Scheme:** [Company]-[Document Type]-[Creation Date].json
 
-**Example:** Helsana-Leistungsabrechnung.json
+**Example:** Helsana-Leistungsabrechnung-20220717.json
 
-### Configuration File Structure (Example Helsana-Leistungsabrechnung.json)
+### Configuration File Structure (Example Helsana-Leistungsabrechnung-20220717.json)
 ```
 {
     "company_name": "Helsana",
