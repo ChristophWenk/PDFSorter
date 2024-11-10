@@ -1,6 +1,5 @@
 import logging
 import os
-import warnings
 from datetime import datetime
 from os import makedirs
 import settings

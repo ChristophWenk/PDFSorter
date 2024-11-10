@@ -78,6 +78,7 @@ def get_document_type_for_company(text, document_type_dictionary, company):
             return document_type_config.get('document_type')
     return None
 
+
 # Check which company and document type is in scope
 def get_document_types_for_company_list(text, document_type_dictionary, company_list):
     for company in company_list:

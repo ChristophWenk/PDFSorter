@@ -22,10 +22,10 @@ def read_pdf(file_path):
     zoom = 4
     matrix = pymupdf.Matrix(zoom, zoom)
     for i in range(pdf_file.page_count):
-            image_path = f"{settings.image_output_dir}/{image_name}_{i + 1}.png"
-            page = pdf_file.load_page(i)
-            image = page.get_pixmap(matrix=matrix)
-            image.save(image_path)
+        image_path = f"{settings.image_output_dir}/{image_name}_{i + 1}.png"
+        page = pdf_file.load_page(i)
+        image = page.get_pixmap(matrix=matrix)
+        image.save(image_path)
 
     # Read text from images with OCR
     reader = easyocr.Reader(settings.ocr_languages)
