@@ -1,10 +1,7 @@
 import logging
 import os
-import warnings
 from datetime import datetime
 from os import makedirs
-
-from PyPDF2.errors import PdfReadWarning
 import settings
 
 
@@ -16,9 +13,6 @@ def setup_logger():
              exist_ok=True)
 
     logging.basicConfig(level=settings.log_level, format=logging_format, handlers=[
-        logging.FileHandler(settings.log_files_dir + log_file_name, encoding='utf-8'),  # Write to file
+        logging.FileHandler(f"{settings.log_files_dir}/{log_file_name}", encoding='utf-8'),  # Write to file
         logging.StreamHandler()  # Write to console
     ])
-
-    # Log filters
-    warnings.filterwarnings("ignore", category=PdfReadWarning)
