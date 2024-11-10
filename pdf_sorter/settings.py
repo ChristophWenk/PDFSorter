@@ -1,11 +1,12 @@
 import locale
 import logging
+import os
 
 # Do (False) or do not (True) rename files and move them
-dry_run = True
+dry_run = False
 
 # Folder that contains the PDFs to process
-pdf_files_dir = 'C:/Users/chris/OneDrive/Dokumentenupload'
+pdf_files_dir = f"C:/Users/{os.getlogin()}/OneDrive/Dokumentenupload"
 
 # Folder that contains the document configuration files
 config_files_dir = '../resources/config_files'
