@@ -1,27 +1,36 @@
-import PyPDF2
 import logging
+import settings
+import pymupdf
+import easyocr
 
 logger = logging.getLogger(__name__)
 
 
 def print_metadata(pdf_file):
     # printing number of pages in pdf file
-    logger.debug("Total number of pages: " + str(pdf_file.numPages))
-    return pdf_file.numPages
+    logger.debug(f"Total number of pages: {pdf_file.page_count}")
+    logger.debug(f"Document Info: {pdf_file.metadata}")
 
 
 def read_pdf(file_path):
-    pdf_file = PyPDF2.PdfReader(file_path)
+    pdf_file = pymupdf.open(file_path)
     print_metadata(pdf_file)
 
-    pdf_text = ""
-    i = 0
-    while i < pdf_file.numPages:
-        try:
-            pdf_page = pdf_file.getPage(i)
-            pdf_text += pdf_page.extractText()
-        except IndexError:
-            logger.warning("Page number " + str(i + 1) + " could not be read. Skipping page.")
-        finally:
-            i += 1
+    # Convert PDF to images
+    zoom = 4
+    matrix = pymupdf.Matrix(zoom, zoom)
+    for i in range(pdf_file.page_count):
+            image_path = f"{settings.image_output_dir}/image_{i + 1}.png"
+            page = pdf_file.load_page(i)
+            image = page.get_pixmap(matrix=matrix)
+            image.save(image_path)
+
+    # Read text from images with OCR
+    reader = easyocr.Reader(settings.ocr_languages)
+    pdf_textblock_list = []
+    for i in range(pdf_file.page_count):
+        pdf_textblock_list += reader.readtext(f"{settings.image_output_dir}/image_{i + 1}.png", detail=0)
+
+    pdf_text = "".join(pdf_textblock_list)
+    logger.debug(pdf_text)
     return pdf_text

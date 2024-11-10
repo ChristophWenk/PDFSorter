@@ -6,4 +6,7 @@ dependencies:
   - pip=21.2.4
   - python=3.10.4
   - pip:
-    - pypdf2==2.4.2
+    - pymupdf=1.24.13
+    - easyocr=1.7.2
+    - torch==2.5.1
+    - torchvision==0.20.1

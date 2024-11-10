@@ -57,10 +57,10 @@ def get_document_type(text, document_type_dictionary, company):
 
 
 # Check which company is in scope
-def get_company(text, document_type_dictionary):
+def get_company_and_document_type(pdf_text, document_type_dictionary):
     for company in document_type_dictionary:
-        if company in text:
-            document_type = get_document_type(text, document_type_dictionary, company)
+        if company in pdf_text:
+            document_type = get_document_type(pdf_text, document_type_dictionary, company)
             if document_type:
                 logger.debug("Company retrieved from config file name: " + company)
                 return company, document_type
@@ -107,7 +107,7 @@ def process_files(path, config_file_path):
         logger.info("Processing file... " + file_name)
 
         pdf_text = read_pdf(path + '/' + file_name)
-        company, document_type = get_company(pdf_text, document_type_dictionary)
+        company, document_type = get_company_and_document_type(pdf_text, document_type_dictionary)
 
         if company is None and document_type is None:
             logger.warning("Company name and/or document type not found. Skipping PDF file.")
@@ -183,5 +183,7 @@ def update_config_from_regex(pdf_text, document_type_dates_list, config_file_pat
 # Main Function
 if __name__ == '__main__':
     setup_logger()
+    makedirs(os.path.dirname(settings.image_output_dir),
+             exist_ok=True)
 
     process_files(settings.pdf_files_dir, settings.config_files_dir)
