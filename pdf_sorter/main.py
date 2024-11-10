@@ -45,34 +45,55 @@ def create_document_type_dictionary(path):
     return document_type_dictionary
 
 
+# Create a list of all companies in the config files
+def get_all_companies(document_type_dictionary):
+    company_list = set()
+    for company in document_type_dictionary:
+        company_list.add(company)
+    return company_list
+
+
+# Check which companies might be in scope
+def get_company_candidates(text, company_list):
+    company_candidates = set()
+    for company in company_list:
+        if company in text:
+            company_candidates.add(company)
+    if company_candidates:
+        # logger.info(f"Company candidates found in text: {str(company_candidates)}")
+        logger.debug(f"Company candidates found in text: {', '.join(company_candidates)}")
+        return company_candidates
+    else:
+        logger.warning("No company candidates found in text.")
+        return None
+
+
 # Check which document type is in scope
-def get_document_type(text, document_type_dictionary, company):
+def get_document_type_for_company(text, document_type_dictionary, company):
     # Companies may appear in documents of other companies. Therefore, filter for document types that belong to the
     # selected company.
     for document_type_config in document_type_dictionary[company].get('document_type_configurations'):
-        document_type_config.get('document_type')
         if document_type_config.get('document_type') in text:
-            logger.debug("Document Type retrieved from config file name: " + document_type_config.get('document_type'))
+            logger.info(f"Matched company name \"{company}\" to document type \"{document_type_config.get('document_type')}\"")
             return document_type_config.get('document_type')
+    return None
 
-
-# Check which company is in scope
-def get_company_and_document_type(pdf_text, document_type_dictionary):
-    for company in document_type_dictionary:
-        if company in pdf_text:
-            document_type = get_document_type(pdf_text, document_type_dictionary, company)
+# Check which company and document type is in scope
+def get_document_types_for_company_list(text, document_type_dictionary, company_list):
+    for company in company_list:
+        if company in text:
+            document_type = get_document_type_for_company(text, document_type_dictionary, company)
             if document_type:
-                logger.debug("Company retrieved from config file name: " + company)
                 return company, document_type
-    # Company and document type not found in PDF text
+    logger.warning("Did not find matching combination of company and document type.")
     return None, None
 
 
-def get_attr_from_regex(config, regex, pdf_text):
+def get_attr_from_regex(config, regex, text):
     regex_config = config['regex_patterns'][regex]
     compiled_regex = re.compile(regex_config)
-    if compiled_regex.search(pdf_text) is not None:
-        return compiled_regex.search(pdf_text).group()
+    if compiled_regex.search(text) is not None:
+        return compiled_regex.search(text).group()
     else:
         raise ValueError(regex)
 
@@ -100,16 +121,25 @@ def process_files(path, config_file_path):
     logger.info("##################################")
 
     document_type_dictionary = create_document_type_dictionary(config_file_path)
+    company_list = get_all_companies(document_type_dictionary)
     file_path_list = [f for f in listdir(path) if isfile(join(path, f))]
     not_processed_list = []
     for file_name in file_path_list:
+        logger.info("\n")
         logger.info('==============================================================================================')
         logger.info("Processing file... " + file_name)
 
-        pdf_text = read_pdf(path + '/' + file_name)
-        company, document_type = get_company_and_document_type(pdf_text, document_type_dictionary)
+        pdf_text = read_pdf(f"{path}/{file_name}")
 
-        if company is None and document_type is None:
+        company_candidates = get_company_candidates(pdf_text, company_list)
+        if company_candidates is None:
+            logger.warning("No suitable company candidates found. Skipping PDF file.")
+            not_processed_list.append(file_name)
+            continue
+
+        company, document_type = get_document_types_for_company_list(pdf_text, document_type_dictionary,
+                                                                     company_candidates)
+        if company is None or document_type is None:
             logger.warning("Company name and/or document type not found. Skipping PDF file.")
             not_processed_list.append(file_name)
             continue
@@ -148,6 +178,7 @@ def process_files(path, config_file_path):
             not_processed_list.append(file_name)
             continue
 
+    logger.info("\n")
     logger.info('==============================================================================================')
     logger.info("##################################")
     logger.info("# PDF Sort Run completed         #")
@@ -167,7 +198,7 @@ def update_config_from_regex(pdf_text, document_type_dates_list, config_file_pat
             # Get newest config date
             config_date = document_type_dates_list.pop()
 
-            config_file_name = config_file_path + '/' + company + '-' + document_type + '-' + config_date + '.json'
+            config_file_name = f"{config_file_path}/{company}-{document_type}-{config_date}.json"
             config = read_json(config_file_name)
             for regex_key in config['regex_patterns']:
                 attribute_value = get_attr_from_regex(config, regex_key, pdf_text)

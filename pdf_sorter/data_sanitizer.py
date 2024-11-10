@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 def sanitize_document_id(document_id):
     document_id = document_id.replace(' ', '')
     document_id = document_id.replace('\n', '')
+    document_id = document_id.replace(' ', '_')
     return document_id
 
 

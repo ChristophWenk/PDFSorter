@@ -23,4 +23,4 @@ locale.setlocale(locale.LC_ALL, 'de_CH')
 ocr_languages = ['de']
 
 # Log level used by the common logger
-log_level = logging.DEBUG
+log_level = logging.INFO
