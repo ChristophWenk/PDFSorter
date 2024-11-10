@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 def sanitize_document_id(document_id):
     document_id = document_id.replace(' ', '')
     document_id = document_id.replace('\n', '')
+    document_id = document_id.replace(' ', '_')
     return document_id
 
 
@@ -24,14 +25,14 @@ def sanitize_date(date):
 
 def expand_date_abbreviation(date):
     if locale.getlocale()[0] == 'de_CH':
-        if "Jan." in date: return date.replace('Jan.', 'Januar')
-        if "Feb." in date: return date.replace('Feb.', 'Februar')
-        if "Apr." in date: return date.replace('Apr.', 'April')
-        if "Aug." in date: return date.replace('Aug.', 'August')
-        if "Sept." in date: return date.replace('Sept.', 'September')
-        if "Okt." in date: return date.replace('Okt.', 'Oktober')
-        if "Nov." in date: return date.replace('Nov.', 'November')
-        if "Dez." in date: return date.replace('Dez.', 'Dezember')
+        if "Jan." in date: return date.replace('Jan.', 'Januar')        # noqa: E701
+        if "Feb." in date: return date.replace('Feb.', 'Februar')       # noqa: E701
+        if "Apr." in date: return date.replace('Apr.', 'April')         # noqa: E701
+        if "Aug." in date: return date.replace('Aug.', 'August')        # noqa: E701
+        if "Sept." in date: return date.replace('Sept.', 'September')   # noqa: E701
+        if "Okt." in date: return date.replace('Okt.', 'Oktober')       # noqa: E701
+        if "Nov." in date: return date.replace('Nov.', 'November')      # noqa: E701
+        if "Dez." in date: return date.replace('Dez.', 'Dezember')      # noqa: E701
         return date
 
 
